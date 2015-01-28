@@ -12,6 +12,10 @@ if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . parse_url($_SERVER['RE
 
 // Setup autoloading
 require 'init_autoloader.php';
+$i = new Zend\Loader\StandardAutoloader(array(
+    'namespace' => 'application/helper/'
+));
+$i->register();
 
 // Run the application!
 Zend\Mvc\Application::init(require 'config/application.config.php')->run();

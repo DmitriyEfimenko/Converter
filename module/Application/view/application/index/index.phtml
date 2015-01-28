@@ -60,10 +60,10 @@
             event.preventDefault();
             $('#form1').ajaxUpload({
 
-                url: 'application/index/ajax',
+                url: 'application/index/converter',
                 type : 'POST',
                 success: function (data, status, xhr) {
-
+                    console.log(data);
                 }
 
             });

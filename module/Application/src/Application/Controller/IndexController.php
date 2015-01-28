@@ -9,6 +9,7 @@
 
 namespace Application\Controller;
 
+use helper\FormatMap;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
@@ -20,8 +21,23 @@ class IndexController extends AbstractActionController
         return new ViewModel();
     }
 
-    public function ajaxAction()
+    public function converterAction()
     {
 
+        $fileName = $_FILES['upload']['name'];
+        $tempFile = $_FILES['upload']['tmp_name'];
+        $formatIn = substr ($fileName,strrpos($fileName , '.') + 1, strlen($fileName));
+        $formatOut = $_POST['select'];
+        if ($formatIn == 'csv' || $formatIn == 'xml' || $formatIn == 'json'){
+            $formatMap = new FormatMap();
+            $decoder = $formatMap->getDecoder($formatIn);
+            $dto = $decoder->dtoDecod($tempFile);
+            $decoder = $formatMap->getCoder($formatOut);
+            $fileOut = $decoder->fileCode($dto);
+        }else{
+
+        }
+        return false;
     }
 }
+
