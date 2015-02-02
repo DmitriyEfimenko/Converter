@@ -28,10 +28,9 @@ project and you should be ready to go! It should look something like below:
 Но в связи с тем,
 что csv - плоская таблица, xml и json файлы должны выглядить так:
 
-       XML
 <windows>
     <window PartNumber="872-AA">
-        <name>аываыва</name>
+        <name>second_window</name>
         <width>600</width>
         <height>600</height>
     </window>
@@ -43,8 +42,7 @@ project and you should be ready to go! It should look something like below:
     </window>
 </windows>
 
-       JSON
-   {
+{
    "windows":
         {
             "window":
