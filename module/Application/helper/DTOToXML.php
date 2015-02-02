@@ -4,44 +4,64 @@ namespace helper;
 
 class DTOToXml implements Coder
 {
-    private $writer;
-    private $version = '1.0';
-    private $encoding = 'UTF-8';
-
     public function fileCode($dto)
     {
-        var_dump($dto);
-        $this->writer = new \XMLWriter();
-        $this->writer->openMemory();
-        $this->writer->startDocument($this->version,$this->encoding);
-        if(is_array($dto)){
-            $this->arrayToXml($dto);
-            return $this->writer->outputMemory();
-        }else{
-            return false;
+        if($dto && is_array($dto))
+        {
+
+            $dom = new \DOMDocument("1.0", "utf-8");
+            $dom->formatOutput = true;
+            foreach($dto as $key => $value)
+            {
+                $mainWrapper = $key;
+                $dto = $value;
+            }
+            $xml = $dom->saveXML($this->arrayToXml($dto,$dom,$mainWrapper));
+            if($xml)
+            {
+                return $xml;
+            }
         }
+       return false;
     }
 
-    private function arrayToXml ($array)
+    private function arrayToXml ($array, \DOMDocument $dom, $tagName)
     {
-        foreach ($array as $key => $value)
+
+        $element = $dom->createElement($tagName);
+
+        foreach($array as $key => $value)
         {
             if(is_array($value))
             {
                 if(!is_numeric($key))
                 {
-                    $this->writer->startElement($key);
-                    $this->arrayToXml($value);
-                    $this->writer->endElement();
+                    foreach ($value as $elementKey => $elementValue)
+                    {
+
+                        if(!is_numeric($elementKey))
+                        {
+                            $element->appendChild($this->arrayToXml($value, $dom, $key));
+                            break;
+                        }else{
+                            $element->appendChild($this->arrayToXml($elementValue, $dom, $key));
+                        }
+
+                    }
                 }else{
-                    $key = 'key'.$key;
-                    $this->writer->startElement($key);
-                    $this->arrayToXml($value);
-                    $this->writer->endElement();
+                    $key = 'key';
+                    $element->appendChild($this->arrayToXml($value, $dom, $key));
                 }
             }else{
-                $this->writer->writeElement($key,$value);
+                $isAttribute = substr($key,0,1);
+                if($isAttribute == "_")
+                {
+                    $element->setAttribute(substr($key,1,strlen($key)),$value);
+                }else{
+                    $element->appendChild($dom->createElement($key,$value));
+                }
             }
         }
+        return $element;
     }
 }

@@ -1,18 +1,11 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 
 namespace Application\Controller;
 
 use helper\FormatMap;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
+use Zend\View\Renderer\PhpRenderer;
 
 class IndexController extends AbstractActionController
 {
@@ -23,21 +16,47 @@ class IndexController extends AbstractActionController
 
     public function converterAction()
     {
-
+        $view = new ViewModel();
+        $view->setTerminal(true);
         $fileName = $_FILES['upload']['name'];
         $tempFile = $_FILES['upload']['tmp_name'];
         $formatIn = substr ($fileName,strrpos($fileName , '.') + 1, strlen($fileName));
         $formatOut = $_POST['select'];
-        if ($formatIn == 'csv' || $formatIn == 'xml' || $formatIn == 'json'){
+        if ($formatIn == 'csv' || $formatIn == 'xml' || $formatIn == 'json' || $formatOut)
+        {
             $formatMap = new FormatMap();
             $decoder = $formatMap->getDecoder($formatIn);
             $dto = $decoder->dtoDecod($tempFile);
-            $decoder = $formatMap->getCoder($formatOut);
-            $fileOut = $decoder->fileCode($dto);
-        }else{
+            if($dto !== false)
+            {
+                $decoder = $formatMap->getCoder($formatOut);
+                $fileOut = $decoder->fileCode($dto);
+                if($fileOut !== false)
+                {
+                    $name = 'ConvertedFile.'. $formatOut .'';
+                    $fp = fopen($name,"w");
+                    fwrite($fp,$fileOut);
 
+                    // Create header
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename=' . $name);
+                    header('Content-Transfer-Encoding: binary');
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' . strlen($fileOut));
+                    // end Create header
+
+                    readfile($name);
+                    fclose($fp);
+                    $this->layout()->setTerminal(true);
+                    return $this->response;
+                }
+            }
         }
-        return false;
+        $view = new ViewModel();
+        return $view;
     }
 }
 

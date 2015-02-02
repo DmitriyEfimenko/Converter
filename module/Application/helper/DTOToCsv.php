@@ -4,27 +4,51 @@ namespace helper;
 
 class DTOToCsv implements Coder
 {
+    private $tempMemory;
+    private $csv;
+    private $status = true;
+
     public function fileCode($dto)
     {
-        if(is_array($dto))
+        if($dto && is_array($dto))
         {
-            var_dump($dto);
-            $temp_memory = fopen('php://temp', 'rw');
-            foreach($dto as $line)
+            $this->tempMemory = fopen('php://temp', 'r+');
+            $this->arrayToCsv($dto);
+            fclose($this->tempMemory);
+            if($this->csv != null && $this->status != false)
             {
+                return $this->csv;
+            }
+        }
+        return false;
+    }
 
-                    foreach($line as $lines)
+    private function arrayToCsv($dto)
+    {
+        foreach($dto as $key => $value)
+        {
+            if (is_array($value)) {
+                if (!is_numeric($key)) {
+                    if($this->csv == null)
                     {
-                        fputcsv($temp_memory,$lines);
+                        $this->arrayToCsv($value);
+                    }else{
+                        $this->status = false;
+                        break;
                     }
 
+                } else {
+                    if ($key == 0) {
+                        fputcsv($this->tempMemory, array_keys($value));
+                        fputcsv($this->tempMemory, $value);
+                    } else {
+                        fputcsv($this->tempMemory, $value);
+                    }
+                    rewind($this->tempMemory);
+                    $this->csv = stream_get_contents($this->tempMemory);
+                }
+
             }
-            rewind($temp_memory);
-            $csv = stream_get_contents($temp_memory);
-            fclose($temp_memory);
-            return $csv;
-        }else{
-            return false;
         }
     }
 }

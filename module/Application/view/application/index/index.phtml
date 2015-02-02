@@ -1,30 +1,27 @@
-<div class="content">
-    <div class="table">
-        <div class="has-error">
-            <span> Wrong file format!</span>
-        </div>
-
-        <div class="tab-content">
-            <form action=""  method="post" id="form1">
-                <div class="file">
-                    <h4>Select file(xml, json or csv) to convert:</h4>
-                    <input type="file" class="btn" name="upload" accept=".json, .csv, .xml" >
-                </div>
-
-                <div class="format">
-                    <h4> Convert to:</h4>
-                    <select class="selectpicker" name="select">
-                        <option value="json">JSON</option>
-                        <option value="xml">XML</option>
-                        <option value="csv">CSV</option>
-                    </select>
-                </div>
-
-                <input type="submit" class="btn btn-success" value="Convert" >
-            </form>
-        </div>
-    </div>
+<div class="has-error">
+    <span> Wrong file format!</span>
 </div>
+
+<div class="tab-content">
+    <form action="application/index/converter" enctype="multipart/form-data" method="post" id="form1">
+        <div class="file">
+            <h4>Select file(xml, json or csv) to convert:</h4>
+            <input type="file" class="btn" name="upload" accept=".json, .csv, .xml" >
+        </div>
+
+        <div class="format">
+            <h4> Convert to:</h4>
+            <select class="selectpicker" name="select">
+                <option value="json">JSON</option>
+                <option value="xml">XML</option>
+                <option value="csv">CSV</option>
+            </select>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="Convert" >
+    </form>
+</div>
+
 
 <script>
     $(document).ready(function(){
@@ -56,18 +53,18 @@
             }
         })
 
-        $('.btn-success').on("click", function(){
+        /*$('.btn-success').on("click", function(){
             event.preventDefault();
             $('#form1').ajaxUpload({
 
                 url: 'application/index/converter',
                 type : 'POST',
                 success: function (data, status, xhr) {
-                    console.log(data);
+
                 }
 
             });
 
-        })
+        })*/
     })
 </script>
