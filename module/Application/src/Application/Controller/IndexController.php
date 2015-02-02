@@ -50,6 +50,7 @@ class IndexController extends AbstractActionController
 
                     readfile($name);
                     fclose($fp);
+                    unlink($name);
                     $this->layout()->setTerminal(true);
                     return $this->response;
                 }
