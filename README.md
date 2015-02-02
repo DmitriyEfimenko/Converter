@@ -26,42 +26,7 @@ project and you should be ready to go! It should look something like below:
 Проект поддерживает любые манипуляции json->xml, xml->json.
 
 Но в связи с тем,
-что csv - плоская таблица, xml и json файлы должны выглядить так:
-
-<windows>
-    <window PartNumber="872-AA">
-        <name>second_window</name>
-        <width>600</width>
-        <height>600</height>
-    </window>
-
-    <window PartNumber="872-AB">
-        <name>first_window</name>
-        <width>1900</width>
-        <height>1200</height>
-    </window>
-</windows>
-
-{
-   "windows":
-        {
-            "window":
-                [{
-                    "_PartNumber":"872-AA",
-                    "name":"аываыва",
-                    "width":"600",
-                    "height":"600"
-                 },
-                 {
-                    "_PartNumber":"872-AB",
-                    "name":"first_window",
-                    "width":"1900",
-                    "height":"1200"
-                 }]
-        }
-   }
-
-Тоесть без какой либо вложенности или разных элементов.
+что csv - плоская таблица, xml и json файлы должны быть без какой либо вложенности или разных элементов.
 
 От себя
 ----------------
