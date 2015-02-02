@@ -1,0 +1,70 @@
+<div class="has-error">
+    <span> Wrong file format!</span>
+</div>
+
+<div class="tab-content">
+    <form action="application/index/converter" enctype="multipart/form-data" method="post" id="form1">
+        <div class="file">
+            <h4>Select file(xml, json or csv) to convert:</h4>
+            <input type="file" class="btn" name="upload" accept=".json, .csv, .xml" >
+        </div>
+
+        <div class="format">
+            <h4> Convert to:</h4>
+            <select class="selectpicker" name="select">
+                <option value="json">JSON</option>
+                <option value="xml">XML</option>
+                <option value="csv">CSV</option>
+            </select>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="Convert" >
+    </form>
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        $('input[name=upload]').on("change",function(){
+            $('.has-error').css("display","none");
+            var file_name = $('input[name=upload]').val();
+            $('.selectpicker option').each(function(){
+                $(this).show();
+            });
+            $('.selectpicker :first').attr("selected","selected");
+            var format = file_name.split(".");
+
+            if(format[1] == 'xml' || format[1] == 'csv' || format[1] == 'json' ){
+                $('.format').css("display","block");
+                $(".selectpicker [value=" + format[1] + "]").hide();
+                $('.selectpicker option').each(function(){
+                    if($(this).val() != format[1]){
+                        $(this).attr("selected","selected");
+                        return false;
+                    }
+                });
+
+                $('.btn-success').css("display","block");
+
+            }else{
+                $('.format').css("display","none");
+                $('.btn-success').css("display","none");
+                $('.has-error').css("display","block");
+            }
+        })
+
+        /*$('.btn-success').on("click", function(){
+            event.preventDefault();
+            $('#form1').ajaxUpload({
+
+                url: 'application/index/converter',
+                type : 'POST',
+                success: function (data, status, xhr) {
+
+                }
+
+            });
+
+        })*/
+    })
+</script>
